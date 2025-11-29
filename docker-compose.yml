@@ -1,1 +1,39 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ielts_test_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ielts_test_platform
+      NEXTAUTH_SECRET: your_nextauth_secret_here
+      NEXTAUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      STRIPE_SECRET_KEY: sk_test_xxx
+      STRIPE_WEBHOOK_SECRET: whsec_xxx
+      STRIPE_WEEKLY_PRICE_ID: price_weekly_xxx
+      STRIPE_MONTHLY_PRICE_ID: price_monthly_xxx
+      OPENAI_API_KEY: sk-openai-xxx
+      OPENAI_MODEL: gpt-4o-mini
+      SENDGRID_API_KEY: SG.xxxxx
+      SENDGRID_FROM_EMAIL: no-reply@example.com
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
 
