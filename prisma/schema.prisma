@@ -1,1 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TestType {
+  MCQ
+  WRITING
+}
+
+enum PurchaseType {
+  ONE_TIME
+  SUBSCRIPTION
+}
+
+enum PurchaseStatus {
+  PENDING
+  ACTIVE
+  CANCELED
+}
+
+enum AttemptType {
+  MCQ
+  WRITING
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String?
+  email        String      @unique
+  passwordHash String
+  role         Role        @default(USER)
+  createdAt    DateTime    @default(now())
+  attempts     Attempt[]
+  purchases    Purchase[]
+}
+
+model Test {
+  id               String      @id @default(cuid())
+  title            String
+  description      String
+  type             TestType
+  durationMinutes  Int
+  priceCents       Int
+  stripePriceId    String?
+  isPublished      Boolean     @default(false)
+  questions        Question[]
+  createdAt        DateTime    @default(now())
+  writingRubricJson Json?
+}
+
+model Question {
+  id            String  @id @default(cuid())
+  testId        String
+  test          Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  prompt        String
+  options       String[]
+  correctIndex  Int?
+  order         Int      @default(0)
+}
+
+model Attempt {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testId      String
+  test        Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  startedAt   DateTime     @default(now())
+  completedAt DateTime?
+  score       Float?
+  maxScore    Float?
+  type        AttemptType
+  answers     Answer[]
+  feedback    String?
+  createdAt   DateTime     @default(now())
+}
+
+model Answer {
+  id           String   @id @default(cuid())
+  attemptId    String
+  attempt      Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedIndex Int?
+  textAnswer   String?
+  isCorrect    Boolean?
+}
+
+model Purchase {
+  id                   String          @id @default(cuid())
+  userId               String
+  user                 User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testId               String?
+  type                 PurchaseType
+  status               PurchaseStatus  @default(PENDING)
+  stripeSessionId      String          @unique
+  stripeSubscriptionId String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  expiresAt            DateTime?
+}
 
