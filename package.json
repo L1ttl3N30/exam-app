@@ -1,1 +1,43 @@
-
+{
+  "name": "ielts-test-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "docker:dev": "docker-compose up --build"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "bcryptjs": "^2.4.3",
+    "next": "14.2.5",
+    "next-auth": "^5.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stripe": "^16.0.0",
+    "zod": "^3.23.8",
+    "openai": "^4.58.1",
+    "@sendgrid/mail": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/node": "22.7.4",
+    "@types/react": "18.3.8",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "10.4.20",
+    "eslint": "9.9.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "8.4.47",
+    "prisma": "^5.20.0",
+    "tailwindcss": "3.4.13",
+    "ts-node": "^10.9.2",
+    "typescript": "5.6.3"
+  }
+}
